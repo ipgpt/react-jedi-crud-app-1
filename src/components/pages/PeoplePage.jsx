@@ -1,71 +1,90 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
+import { Context } from "../../context";
 import Table from "../common/Table";
-import Form from "../common/Form";
-import  {getPeople} from "../../services/swApiService";
-
-const data = [
-    {first: 'Mark', last: 'Otto', handle: '@motto', id: '1'},
-    {first: 'Carl', last: 'Reno', handle: '@ceno', id: '2'},
-    {first: 'Steve', last: 'Smith', handle: '@ssteve', id: '3'}
-]
-
-const columns = Object.keys(data[0]);
+import { getPeople } from "../../services/swApiService";
 
 const PeoplePage = () => {
-    const pageName = 'People';
-    const [people, setPeople] = useState([]);
+  const pageName = "People";
+  const [context, setContext] = useContext(Context);
 
-    useEffect( () => {
-        const getData = async () => {
-            const data = await getPeople()
-            console.log(data)
-            setPeople(data)
-        }
-
-        getData()
-    }, [])
-
-    const handleAppPerson = (personData) => {
-        const data = [...people, personData];
-        setPeople(data)
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getPeople();
+      console.log(data);
+      setContext({
+        ...context,
+        people: data.map((item, index) => ({ ...item, id: index + 1 })),
+      });
+    };
+    if (!context.people.length) {
+      getData();
     }
+  }, []);
 
-    const handleDelete = (id) => {
-        const filteredPeople = people.filter(person => person.id !== id);
-        setPeople(filteredPeople)
+  const handleAppPerson = (personData) => {
+    const isSameId = context.people.find((item) => item.id === personData.id);
+    if (!isSameId) {
+      setContext({
+        ...context,
+        people: [...context.people, personData],
+      });
     }
+  };
 
-    const getInitialPeopleData = () => {
-        return columns.reduce((cols, columnName) => {
-            cols[columnName] = "";
-            return cols;
-        }, {})
+  const handleDelete = (id) => {
+    setContext({
+      ...context,
+      people: context.people.filter((person) => person.id !== id),
+    });
+  };
+
+  const getInitialPeopleData = () => {
+    const columns = Object.keys(context.people).length
+      ? Object.keys(context.people[0])
+      : [];
+    return columns.reduce((cols, columnName) => {
+      cols[columnName] = "";
+      return cols;
+    }, {});
+  };
+
+  const getColumnNames = () => {
+    if (!context.people.length) {
+      return [];
     }
+    return Object.keys(context.people[0]);
+  };
 
-    const getColumnNames = () => {
-        if (!people.length) {
-            return []
-        }
+  const setContextOnClick = (item) => () => {
+    setContext({
+      ...context,
+      handleAppPerson,
+      getColumnNames,
+      item,
+    });
+  };
 
-        return Object.keys(people[0])
-    }
-
-    return (
-        <>
-            <h2>{pageName} from Star Wars Universe</h2>
-            <Table
-                data={people}
-                columns={getColumnNames()}
-                tableDescriptor={pageName}
-                onDelete={handleDelete}
-            />
-            <Form
-                initialData={getInitialPeopleData()}
-                columns={getColumnNames()}
-                onAddData={handleAppPerson}
-            />
-        </>
-    );
+  return (
+    <>
+      <h2>{pageName} from Star Wars Universe</h2>
+      <Link
+        to="/people/form"
+        className="btn btn-primary"
+        onClick={setContextOnClick(getInitialPeopleData())}
+      >
+        Add Person
+      </Link>
+      <hr />
+      <Table
+        data={context.people}
+        columns={getColumnNames()}
+        tableDescriptor={pageName}
+        onDelete={handleDelete}
+        setContextOnClick={setContextOnClick}
+      />
+    </>
+  );
 };
 
 export default PeoplePage;

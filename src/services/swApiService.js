@@ -6,5 +6,4 @@ export const getPeople = async () => {
     return  peopleResponse.results.map(({name, height, mass, gender, birth_year}) => ({
         name, height, mass, gender, birth_year
     }))
-    console.log(peopleResponse)
 }
