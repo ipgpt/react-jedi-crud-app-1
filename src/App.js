@@ -12,11 +12,12 @@ import NotFound from "./components/pages/NotFound";
 import FormPage from "./components/pages/FormPage";
 
 function App() {
-  const [context, setContext] = useState({
+  const appLocalStore = JSON.parse(localStorage.getItem("store")) || {
     people: [],
-    starships: [],
     planets: [],
-  });
+    starships: [],
+  };
+  const [context, setContext] = useState(appLocalStore);
 
   return (
     <Context.Provider value={[context, setContext]}>

@@ -22,21 +22,34 @@ const PeoplePage = () => {
     }
   }, []);
 
-  const handleAppPerson = (personData) => {
+  const handleAddPerson = (personData) => {
     const isSameId = context.people.find((item) => item.id === personData.id);
+    const newStore = {
+      ...context,
+      people: [...context.people, personData],
+    };
     if (!isSameId) {
-      setContext({
+      localStorage.setItem("store", JSON.stringify(newStore));
+      setContext(newStore);
+    } else {
+      const updatedStore = {
         ...context,
-        people: [...context.people, personData],
-      });
+        people: context.people.map((item) =>
+          item.id === personData.id ? personData : item
+        ),
+      };
+      localStorage.setItem("store", JSON.stringify(updatedStore));
+      setContext(updatedStore);
     }
   };
 
-  const handleDelete = (id) => {
-    setContext({
+  const handleDeletePerson = (id) => {
+    const newStore = {
       ...context,
       people: context.people.filter((person) => person.id !== id),
-    });
+    };
+    localStorage.setItem("store", JSON.stringify(newStore));
+    setContext(newStore);
   };
 
   const getInitialPeopleData = () => {
@@ -47,11 +60,15 @@ const PeoplePage = () => {
       cols[columnName] = "";
       return cols;
     }, {});
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
     item.type = "people";
     return item;
   };
 
-  const getColumnNames = () => {
+  const getPeopleColumnNames = () => {
     if (!context.people.length) {
       return [];
     }
@@ -59,11 +76,16 @@ const PeoplePage = () => {
   };
 
   const setContextOnClick = (item) => () => {
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
+    item.type = "people";
     setContext({
       ...context,
-      handleAppPerson,
-      getColumnNames,
-      item: { ...item, type: "people" },
+      handleAddPerson,
+      getPeopleColumnNames,
+      item,
     });
   };
 
@@ -80,9 +102,9 @@ const PeoplePage = () => {
       <hr />
       <Table
         data={context.people}
-        columns={getColumnNames()}
+        columns={getPeopleColumnNames()}
         tableDescriptor={pageName}
-        onDelete={handleDelete}
+        onDelete={handleDeletePerson}
         setContextOnClick={setContextOnClick}
       />
     </>
