@@ -12,7 +12,7 @@ import NotFound from "./components/pages/NotFound";
 import FormPage from "./components/pages/FormPage";
 
 function App() {
-  const [context, setContext] = useState({ people: [] });
+  const [context, setContext] = useState({ people: [], starships: [] });
 
   return (
     <Context.Provider value={[context, setContext]}>

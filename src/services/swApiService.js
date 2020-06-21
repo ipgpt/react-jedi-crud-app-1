@@ -1,7 +1,7 @@
 const url = "https://swapi.dev/api";
 
 export const getPeople = async () => {
-  const peopleResponse = await (await fetch(`${url}/people`)).json();
+  const peopleResponse = await (await fetch(`${url}/people/`)).json();
 
   return peopleResponse.results.map(
     ({ name, height, mass, gender, birth_year }) => ({
@@ -15,7 +15,7 @@ export const getPeople = async () => {
 };
 
 export const getStarships = async () => {
-  const starshipsResponse = await (await fetch(`${url}/starships`)).json();
+  const starshipsResponse = await (await fetch(`${url}/starships/`)).json();
 
   return starshipsResponse.results.map(
     ({

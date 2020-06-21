@@ -43,10 +43,12 @@ const PeoplePage = () => {
     const columns = Object.keys(context.people).length
       ? Object.keys(context.people[0])
       : [];
-    return columns.reduce((cols, columnName) => {
+    const item = columns.reduce((cols, columnName) => {
       cols[columnName] = "";
       return cols;
     }, {});
+    item.type = "people";
+    return item;
   };
 
   const getColumnNames = () => {
@@ -61,7 +63,7 @@ const PeoplePage = () => {
       ...context,
       handleAppPerson,
       getColumnNames,
-      item,
+      item: { ...item, type: "people" },
     });
   };
 
