@@ -10,8 +10,16 @@ const FormPage = () => {
       <h2>Form Page</h2>
       <Form
         initialData={context.item}
-        columns={context.getColumnNames()}
-        onAddData={context.handleAppPerson}
+        columns={
+          context.item.type === "people"
+            ? context.getColumnNames()
+            : context.getStarshipColumnNames()
+        }
+        onAddData={
+          context.item.type === "people"
+            ? context.handleAppPerson
+            : context.handleAddStarship
+        }
       />
     </>
   );
