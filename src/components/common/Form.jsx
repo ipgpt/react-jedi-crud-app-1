@@ -20,7 +20,7 @@ const Form = ({ columns, initialData, onAddData }) => {
     setPersonData(data);
   };
 
-  if (!Object.keys(initialData).length) {
+  if (!Object.keys(personData).length) {
     return null;
   }
 

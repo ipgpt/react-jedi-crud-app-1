@@ -4,11 +4,12 @@ import Form from "../common/Form";
 
 const FormPage = () => {
   const [context] = useContext(Context);
+  const type = context.item ? context.item.type : "";
 
   const getColumns = () => {
-    switch (context.item.type) {
+    switch (type) {
       case "people":
-        return context.getColumnNames();
+        return context.getPeopleColumnNames();
       case "starships":
         return context.getStarshipColumnNames();
       case "planets":
@@ -19,9 +20,9 @@ const FormPage = () => {
   };
 
   const getOnAddData = () => {
-    switch (context.item.type) {
+    switch (type) {
       case "people":
-        return context.handleAppPerson;
+        return context.handleAddPerson;
       case "starships":
         return context.handleAddStarship;
       case "planets":

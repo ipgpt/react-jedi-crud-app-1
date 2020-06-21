@@ -26,19 +26,32 @@ const StarshipsPage = () => {
     const isSameId = context.starships.find(
       (item) => item.id === starshipData.id
     );
+    const newStore = {
+      ...context,
+      starships: [...context.starships, starshipData],
+    };
     if (!isSameId) {
-      setContext({
+      localStorage.setItem("store", JSON.stringify(newStore));
+      setContext(newStore);
+    } else {
+      const updatedStore = {
         ...context,
-        starships: [...context.starships, starshipData],
-      });
+        starships: context.starships.map((item) =>
+          item.id === starshipData.id ? starshipData : item
+        ),
+      };
+      localStorage.setItem("store", JSON.stringify(updatedStore));
+      setContext(updatedStore);
     }
   };
 
   const handleDeleteStarship = (id) => {
-    setContext({
+    const newStore = {
       ...context,
       starships: context.starships.filter((starship) => starship.id !== id),
-    });
+    };
+    localStorage.setItem("store", JSON.stringify(newStore));
+    setContext(newStore);
   };
 
   const getInitialStarshipsData = () => {
@@ -49,6 +62,10 @@ const StarshipsPage = () => {
       cols[columnName] = "";
       return cols;
     }, {});
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
     item.type = "starships";
     return item;
   };
@@ -61,11 +78,16 @@ const StarshipsPage = () => {
   };
 
   const setContextOnClick = (item) => () => {
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
+    item.type = "starships";
     setContext({
       ...context,
       handleAddStarship,
       getStarshipColumnNames,
-      item: { ...item, type: "starships" },
+      item,
     });
   };
 

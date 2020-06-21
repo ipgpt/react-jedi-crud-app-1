@@ -24,19 +24,32 @@ const PlanetsPage = () => {
 
   const handleAddPlanet = (planetData) => {
     const isSameId = context.planets.find((item) => item.id === planetData.id);
+    const newStore = {
+      ...context,
+      planets: [...context.planets, planetData],
+    };
     if (!isSameId) {
-      setContext({
+      localStorage.setItem("store", JSON.stringify(newStore));
+      setContext(newStore);
+    } else {
+      const updatedStore = {
         ...context,
-        planets: [...context.planets, planetData],
-      });
+        planets: context.planets.map((item) =>
+          item.id === planetData.id ? planetData : item
+        ),
+      };
+      localStorage.setItem("store", JSON.stringify(updatedStore));
+      setContext(updatedStore);
     }
   };
 
   const handleDeletePlanet = (id) => {
-    setContext({
+    const newStore = {
       ...context,
       planets: context.planets.filter((planet) => planet.id !== id),
-    });
+    };
+    localStorage.setItem("store", JSON.stringify(newStore));
+    setContext(newStore);
   };
 
   const getInitialPlanetsData = () => {
@@ -47,6 +60,10 @@ const PlanetsPage = () => {
       cols[columnName] = "";
       return cols;
     }, {});
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
     item.type = "planets";
     return item;
   };
@@ -59,11 +76,16 @@ const PlanetsPage = () => {
   };
 
   const setContextOnClick = (item) => () => {
+    Object.defineProperty(item, "type", {
+      enumerable: false,
+      writable: true,
+    });
+    item.type = "planets";
     setContext({
       ...context,
       handleAddPlanet,
       getPlanetColumnNames,
-      item: { ...item, type: "planets" },
+      item,
     });
   };
 
