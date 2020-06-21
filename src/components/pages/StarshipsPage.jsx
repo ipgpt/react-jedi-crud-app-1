@@ -77,7 +77,7 @@ const StarshipsPage = () => {
         className="btn btn-primary"
         onClick={setContextOnClick(getInitialStarshipsData())}
       >
-        Add Person
+        Add Starship
       </Link>
       <hr />
       <Table

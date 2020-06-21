@@ -10,7 +10,7 @@ const Form = ({ columns, initialData, onAddData }) => {
   const handleClick = (event) => {
     event.preventDefault();
     onAddData(personData);
-    history.push("/");
+    history.goBack();
   };
 
   const handleChange = (event) => {

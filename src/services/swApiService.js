@@ -33,3 +33,25 @@ export const getStarships = async () => {
     })
   );
 };
+
+export const getPlanets = async () => {
+  const starshipsResponse = await (await fetch(`${url}/planets/`)).json();
+
+  return starshipsResponse.results.map(
+    ({
+      name,
+      rotation_period,
+      orbital_period,
+      diameter,
+      terrain,
+      population,
+    }) => ({
+      name,
+      rotation_period,
+      orbital_period,
+      diameter,
+      terrain,
+      population,
+    })
+  );
+};
